@@ -11,12 +11,7 @@
             background-color: var(--bg-color); 
             font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; 
             display: flex; flex-direction: column; height: 100vh;
-            /* 전 영역 드래그 및 복제 방지 */
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            /* iOS 롱탭 메뉴 방지 */
+            -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
             -webkit-touch-callout: none;
         }
         
@@ -27,37 +22,44 @@
         h1 { margin: 0; font-size: 1.1rem; word-break: keep-all; }
 
         main { 
-            flex: 1; overflow-y: auto; padding: 10px 5px; 
+            flex: 1; overflow-y: auto; 
+            /* ❗ 하단 패딩(여백)을 0으로 설정하여 네비게이션바와 밀착 */
+            padding: 10px 5px 0 5px; 
             display: flex; justify-content: center; align-items: flex-start;
             position: relative;
         }
 
         .pdf-viewer { 
             max-width: 900px; width: 100%; background: white; 
-            box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 4px;
-            position: relative; /* 보호막의 기준점 */
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+            /* ❗ 하단 테두리를 직선으로 만들어 네비게이션과 연결되게 함 */
+            border-radius: 4px 4px 0 0; 
+            position: relative;
+            margin-bottom: 0; /* 하단 마진 제거 */
         }
 
-        /* 🛡️ 핵심: 투명 보호막 (이미지 위를 덮어서 롱탭 방지) */
+        /* 투명 보호막 (이미지 롱탭 저장 방지) */
         .guard-layer {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 15; /* 이미지보다 위에 위치 */
-            background: rgba(255, 255, 255, 0); /* 투명 */
+            z-index: 15; background: rgba(255, 255, 255, 0);
         }
 
         .pdf-page { display: none; width: 100%; }
         .pdf-page.active { display: block; }
         .pdf-page img { 
             width: 100%; height: auto; display: block; 
-            pointer-events: none; /* 이미지 자체의 클릭 이벤트 무시 */
-            -webkit-user-drag: none;
+            pointer-events: none; -webkit-user-drag: none;
         }
 
         nav { 
-            background-color: white; border-top: 1px solid #ccc; padding: 12px 10px; 
+            background-color: white; 
+            /* 이미지와 구분되는 얇은 선만 남기고 여백 최적화 */
+            border-top: 1px solid #ddd; 
+            padding: 10px 10px 15px 10px; 
             display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
             z-index: 20;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
         }
         .page-num { 
             width: 42px; height: 42px; border: 1px solid #bbb; 
@@ -69,7 +71,8 @@
 
         @media (min-width: 600px) {
             header { padding: 15px; } h1 { font-size: 1.25rem; }
-            main { padding: 20px; } .page-num { width: 45px; height: 45px; border-radius: 50%; }
+            main { padding: 20px 20px 0 20px; } 
+            .page-num { width: 45px; height: 45px; border-radius: 50%; }
         }
     </style>
 </head>
@@ -81,10 +84,7 @@
 
 <main>
     <div class="pdf-viewer">
-        <!-- 보호막 레이어 -->
         <div class="guard-layer"></div>
-        
-        <!-- 시험지 이미지들 -->
         <div id="page-1" class="pdf-page active"><img src="page1.png" alt="1페이지"></div>
         <div id="page-2" class="pdf-page"><img src="page2.png" alt="2페이지"></div>
         <div id="page-3" class="pdf-page"><img src="page3.png" alt="3페이지"></div>
